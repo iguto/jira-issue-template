@@ -1,0 +1,26 @@
+{
+  "manifest_version": 2,
+  "name": "JiraGithubConnector",
+  "version": "0.0.0",
+
+  "description": "connect",
+
+  "browser_action": {
+    "default_title": "jira-github",
+    "default_popup": "popup/input_id.html"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["*://github.com/*"],
+      "js": ["content_scripts/jira-github-connector.js"]
+    }
+  ],
+  "permissions": [
+    "tabs",
+    "storage"
+  ],
+  "options_ui": {
+    "page": "options/options.html"
+  }
+}
