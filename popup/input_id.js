@@ -2,13 +2,22 @@ const inputId = document.querySelector('#jira-id');
 const createIssueButton = document.querySelector('#createIssue');
 const select = document.querySelector('select');
 
-const id2Number = (id) => {
-    return browser.storage.local.get('boardMap').then(res => {
-        const keys = Object.keys(res.boardMap);
-        const currentKey = keys.filter((key) => id.includes(key))[0];
-        return id.replace(`${currentKey}-`, '');
+async function loadBoardMapKeys() {
+    const keys = await browser.storage.local.get().then(res => {
+        console.log('res', res);
+        return Object.keys(res.boardMap);
     });
-};
+    console.log('keys', keys);
+    return keys;
+}
+
+async function id2Number(id) {
+    const keys = await loadBoardMapKeys();
+    console.log('await keys', keys);
+    console.log('keys type', typeof keys);
+    const currentKey = keys.filter((key) => id.includes(key))[0];
+    return id.replace(`${currentKey}-`, '');
+}
 
 const fromRapidBoard = (url) => {
     const params = new window.URLSearchParams(url);
@@ -32,13 +41,13 @@ const buildOptionDOM = (value) => {
     return dom;
 };
 
-createIssueButton.addEventListener('click', (e) => {
+createIssueButton.addEventListener('click', () => {
     const issueNumber = inputId.value;
     const repo = select.value;
 
     const newIssueURL = `https://github.com/${repo}/issues/new`;
     browser.tabs.create({
-        "url": newIssueURL
+        'url': newIssueURL
     }).then(tab => {
         browser.tabs.onUpdated.addListener((tabId, changeinfo) => {
             if (tabId !== tab.id) { return null; }
@@ -48,6 +57,12 @@ createIssueButton.addEventListener('click', (e) => {
         });
     });
 });
+
+async function setIssueValue(issueId) {
+    const issueValue = await id2Number(issueId);
+    console.log('await issueValue', issueValue);
+    inputId.value = issueValue;
+}
 
 browser.tabs.query({active: true, currentWindow: true}).then((tabs) => {
     const tab = tabs[0];
@@ -59,7 +74,7 @@ browser.tabs.query({active: true, currentWindow: true}).then((tabs) => {
     const issueId = issueIdFromURL(tab.url);
     const boardName = issueId.split('-')[0];
     console.log('issueId', issueId);
-    id2Number(issueId).then((res) => inputId.value = res);
+    setIssueValue(issueId);
 
     browser.storage.local.get('boardMap').then((storage) => {
         const repos = storage.boardMap[boardName].split(',');

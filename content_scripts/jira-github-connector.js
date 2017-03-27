@@ -1,4 +1,4 @@
-console.log("jira-github-connector", "loaded -----------------------------");
+console.log('jira-github-connector', 'loaded -----------------------------');
 
 const description = document.querySelector('#issue_body');
 
