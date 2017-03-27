@@ -4,17 +4,13 @@ const select = document.querySelector('select');
 
 async function loadBoardMapKeys() {
     const keys = await browser.storage.local.get().then(res => {
-        console.log('res', res);
         return Object.keys(res.boardMap);
     });
-    console.log('keys', keys);
     return keys;
 }
 
 async function id2Number(id) {
     const keys = await loadBoardMapKeys();
-    console.log('await keys', keys);
-    console.log('keys type', typeof keys);
     const currentKey = keys.filter((key) => id.includes(key))[0];
     return id.replace(`${currentKey}-`, '');
 }
@@ -58,29 +54,27 @@ createIssueButton.addEventListener('click', () => {
     });
 });
 
-async function setIssueValue(issueId) {
-    const issueValue = await id2Number(issueId);
-    console.log('await issueValue', issueValue);
-    inputId.value = issueValue;
-}
+const disableCreate = () => {
+    inputId.disabled = true;
+    createIssueButton.disabled = true;
+};
 
-browser.tabs.query({active: true, currentWindow: true}).then((tabs) => {
+async function setInputValues(tabs) {
     const tab = tabs[0];
     if (!tab.url.includes('atlassian.net')) {
-        inputId.disabled = true;
-        createIssueButton.disabled = true;
+        disableCreate(tab);
         return;
     }
     const issueId = issueIdFromURL(tab.url);
     const boardName = issueId.split('-')[0];
-    console.log('issueId', issueId);
-    setIssueValue(issueId);
-
-    browser.storage.local.get('boardMap').then((storage) => {
-        const repos = storage.boardMap[boardName].split(',');
-        for(let repo of repos) {
-            const option = buildOptionDOM(repo);
-            select.appendChild(option);
-        }
+    inputId.value = await id2Number(issueId);
+    const repos = await browser.storage.local.get('boardMap').then((storage) => {
+        return storage.boardMap[boardName].split(',');
     });
-});
+    for (let repo of repos) {
+        const option = buildOptionDOM(repo);
+        select.appendChild(option);
+    }
+}
+
+browser.tabs.query({active: true, currentWindow: true}).then(setInputValues);
