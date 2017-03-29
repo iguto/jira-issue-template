@@ -1,0 +1,14 @@
+{
+  "name": "JiraGithubConnector",
+  "version": "0.0.0",
+  "scripts": {
+    "build": "webpack",
+    "watch": "webpack --watch",
+    "web-ext": "web-ext run -s target"
+  },
+  "devDependencies": {
+    "copy-webpack-plugin": "^4.0.1",
+    "web-ext": "^1.8.1",
+    "webpack": "^2.3.2"
+  }
+}

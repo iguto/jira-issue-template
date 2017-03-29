@@ -17,6 +17,8 @@
     }
   ],
   "permissions": [
+    "*://*.atlassian.net/*",
+    "*://github.com/*",
     "tabs",
     "storage"
   ],

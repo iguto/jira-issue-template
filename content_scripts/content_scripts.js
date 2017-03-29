@@ -1,5 +1,4 @@
 console.log('jira-github-connector', 'loaded -----------------------------');
-
 const description = document.querySelector('#issue_body');
 
 async function buildDescription(issueNumber) {
@@ -15,4 +14,5 @@ async function setDescription(request) {
     description.value = await buildDescription(request.issueNumber);
 }
 browser.runtime.onMessage.addListener(setDescription);
+console.log('jia api', JiraAPI);
 // new issue

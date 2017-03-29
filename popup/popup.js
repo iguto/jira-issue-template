@@ -1,6 +1,8 @@
 const inputId = document.querySelector('#jira-id');
 const createIssueButton = document.querySelector('#createIssue');
 const select = document.querySelector('select');
+console.log('input loaded');
+import JiraAPI from './JiraAPI';
 
 async function loadBoardMapKeys() {
     const keys = await browser.storage.local.get().then(res => {
