@@ -77,6 +77,10 @@ async function setInputValues(tabs) {
         const option = buildOptionDOM(repo);
         select.appendChild(option);
     }
+    ///
+
 }
 
 browser.tabs.query({active: true, currentWindow: true}).then(setInputValues);
+
+JiraAPI.test();
