@@ -12,8 +12,8 @@
 
   "content_scripts": [
     {
-      "matches": ["*://github.com/*"],
-      "js": ["content_scripts/jira-github-connector.js"]
+      "matches": ["*://github.com/*", "*://*.atlassian.net/*"],
+      "js": ["content_scripts/contents_script.js", "content_scripts/jira.js"]
     }
   ],
   "permissions": [

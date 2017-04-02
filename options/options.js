@@ -8,7 +8,6 @@ const domainInput = document.querySelector('#domain_name');
 saveToStorage = () => {
     const domain = domainInput.value;
     const board = boardInput.value;
-
     const boardMap = {};
     boardMap[board] = repoInput.value;
     const obj = {boardMap, domain};

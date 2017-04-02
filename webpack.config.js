@@ -3,13 +3,14 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 module.exports = {
     context: `${__dirname}`,
     entry: {
-        content_scripts: './content_scripts/content_scripts.js',
-        popup: './popup/popup.js',
-        options: './options/options.js'
+        "content_scripts/contents_script": './content_scripts/content_scripts.js',
+        "content_scripts/jira": './content_scripts/jira.js',
+        "popup/popup": './popup/popup.js',
+        "options/options": './options/options.js'
     },
     output: {
         path: `${__dirname}/target`,
-        filename: '[name]/[name].js'
+        filename: '[name].js'
     },
     cache: true,
     plugins: [
