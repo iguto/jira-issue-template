@@ -1,6 +1,8 @@
 const inputId = document.querySelector('#jira-id');
 const createIssueButton = document.querySelector('#createIssue');
 const select = document.querySelector('select');
+const jiraIssueList = document.querySelector('#jira-issue-list');
+
 console.log('input loaded');
 import JiraAPI from './JiraAPI';
 
@@ -41,7 +43,7 @@ const buildOptionDOM = (value) => {
   return dom;
 };
 
-createIssueButton.addEventListener('click', () => {
+const onCreate = () => {
   const issueNumber = inputId.value;
   const repo = select.value;
 
@@ -58,7 +60,7 @@ createIssueButton.addEventListener('click', () => {
       }
     });
   });
-});
+};
 
 const disableCreate = () => {
   inputId.disabled = true;
@@ -82,12 +84,29 @@ async function setInputValues(tabs) {
     const option = buildOptionDOM(repo);
     select.appendChild(option);
   }
-  // JiraAPI.fetchSprintNo(storage.domain, issueId);
-  // const boards = await JiraAPI.fetchBoards(storage.domain, issueId);
-  // const sprints = await JiraAPI.fetchSprints(storage.domain, boards[0].id, 'active');
-  // const sprint = sprints[0];
-  // const issues = await JiraAPI.fetchIssuesForSprint(storage.domain, sprint.id);
 }
 
+function buildJiraIssueListItemDOM(issue) {
+  const dom = document.createElement('div');
+  dom.innerHTML = `<span>${issue.key}</span>` +
+      `<div class="issue-detail-popout">${issue.fields.summary}</div>`;
+  return dom;
+}
+
+async function appendJiraList() {
+  const storage = await browser.storage.local.get();
+  const boardName = Object.keys(storage.boardMap)[0];
+  const boards = await JiraAPI.fetchBoards(storage.domain, boardName);
+  const sprints = await JiraAPI.fetchSprints(storage.domain, boards[0].id, 'active');
+  const sprint = sprints[0];
+  const issues = await JiraAPI.fetchIssuesForSprint(storage.domain, sprint.id);
+  for (let issue of issues) {
+    const li = buildJiraIssueListItemDOM(issue);
+    jiraIssueList.appendChild(li);
+  }
+}
+
+createIssueButton.addEventListener('click', onCreate);
 browser.tabs.query({active: true, currentWindow: true}).then(setInputValues);
 
+appendJiraList();

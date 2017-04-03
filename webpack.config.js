@@ -3,6 +3,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 module.exports = {
     context: `${__dirname}`,
     entry: {
+        "background/background": './background/background.js',
         "content_scripts/contents_script": './content_scripts/content_scripts.js',
         "content_scripts/jira": './content_scripts/jira.js',
         "popup/popup": './popup/popup.js',

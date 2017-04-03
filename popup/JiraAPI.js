@@ -1,4 +1,5 @@
 console.log('found jira-api file');
+const fetchOption = { credentials: 'same-origin', cache: 'force-cache' };
 
 function greenHopperSprintCustomFieldParse(str) {
     const startAt = str.indexOf('[');
@@ -22,7 +23,7 @@ function greenHopperBaseEndpoint(domain) {
 
 async function fetchIssue(domain, issueId) {
   const url = `${jiraBaseEndpoint(domain)}/issue/${issueId}`;
-  return await fetch(url, { credentials: 'same-origin' }).then((response) => response.json());
+  return await fetch(url, fetchOption).then((response) => response.json());
 }
 
 export default class JiraApi {
@@ -38,11 +39,11 @@ export default class JiraApi {
 
   // static async fetchBoards(domain,) {
   // }
-  static async fetchBoards(domain, issueId) {
-    const boardName = issueId.split('-')[0];
+  static async fetchBoards(domain, boardName) {
     let url = `${greenHopperBaseEndpoint(domain)}/board`;
-    if (issueId) { url += `?name=${boardName}` }
-    const result = await fetch(url, { credentials: 'same-origin' }).then(response => response.json());
+    if (boardName) { url += `?name=${boardName}` }
+
+    const result = await fetch(url, fetchOption).then(response => response.json());
     // ignoring startAt field to simplify
     console.log('board result', result.values);
     return result.values;
@@ -52,7 +53,7 @@ export default class JiraApi {
     if (!['future', 'active', 'closed'].includes(state)) { state = '' }
     let url = `${greenHopperBaseEndpoint(domain)}/board/${boardId}/sprint`;
     if (state) { url += `?state=${state}` }
-    const result = await fetch(url, { credentials: 'same-origin' }).then(response => response.json());
+    const result = await fetch(url, fetchOption).then(response => response.json());
     // ignoreing startAt field to simplif
     console.log('sprint result', result.values);
     return result.values;
@@ -60,7 +61,7 @@ export default class JiraApi {
 
   static async fetchIssuesForSprint(domain, sprintId) {
     const url = `${greenHopperBaseEndpoint(domain)}/sprint/${sprintId}/issue`;
-    const result = await fetch(url, { credentials: 'same-origin'}).then(response => response.json());
+    const result = await fetch(url, fetchOption).then(response => response.json());
     console.log('sprint issue', result.issues);
     return result.issues;
   }
